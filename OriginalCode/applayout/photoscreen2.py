@@ -5,23 +5,24 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
 from camera4kivy import Preview
+from applayout.swipescreen import SwipeScreen
 from applayout.toast import Toast
 
-PS1 = """
-<PhotoScreen1>:
+PS2 = """
+<PhotoScreen2>:
     photo_preview: photo_layout.ids.preview
-    PhotoLayout1:
+    PhotoLayout2:
         id:photo_layout
 """
 
-class PhotoScreen1(BoxLayout):
+class PhotoScreen2(SwipeScreen):
     photo_preview = ObjectProperty(None)
 
     def __init__(self, **args):
-        Builder.load_string(PS1)
+        Builder.load_string(PS2)
         super().__init__(**args)
-
-    #def on_enter(self):
+    
+    def on_enter(self):
         self.photo_preview.connect_camera(filepath_callback= self.capture_path)
 
     def on_pre_leave(self):
@@ -30,47 +31,47 @@ class PhotoScreen1(BoxLayout):
     def capture_path(self,file_path):
         Toast().show(file_path)
 
-PL1 = """
-<PhotoLayout1>:
-    Background1:
+PL2 = """
+<PhotoLayout2>:
+    Background2:
         id: pad_end
     Preview:
         id: preview
-        letterbox_color: .8, .3, 1, .5
-    ButtonsLayout1:
+        orientation: 'opposite'
+        letterbox_color: 1, .3, .8, .5
+    ButtonsLayout2:
         id: buttons
 
-<Background1@Label>:
+<Background2@Label>:
     canvas:
         Color: 
-            rgba: .8, .3, 1, .5
+            rgba: 1, .3, .8, .5
         Rectangle:
             pos: self.pos
             size: self.size
 """
 
-class PhotoLayout1(BoxLayout):
+class PhotoLayout2(BoxLayout):
 
     def __init__(self, **args):
-        Builder.load_string(PL1)
-        super().__init__(**args)
-    
+        Builder.load_string(PL2)
+        super().__init__(**args)    
+
     def on_size(self, layout, size):
         if Window.width < Window.height:
             self.orientation = 'vertical'
-            self.ids.preview.size_hint = (1, .8)
-            self.ids.buttons.size_hint = (1, .2)
-            self.ids.pad_end.size_hint = (1, .1)
+            self.ids.preview.size_hint  = (1, .3)
+            self.ids.buttons.size_hint  = (1, .2)
+            self.ids.pad_end.size_hint  = (1, .1)  
         else:
             self.orientation = 'horizontal'
-            self.ids.preview.size_hint = (.8, 1)
+            self.ids.preview.size_hint = (.3, 1)
             self.ids.buttons.size_hint = (.2, 1)
             self.ids.pad_end.size_hint = (.1, 1)
 
-
-BL1 = """
-<ButtonsLayout1>:
-    Background1:
+BL2 = """
+<ButtonsLayout2>:
+    Background2:
     Button:
         id:other
         on_press: root.select_camera('toggle')
@@ -94,17 +95,18 @@ BL1 = """
         background_down:   'icons/camera_red.png'
 """
 
-class ButtonsLayout1(RelativeLayout):
-    
+class ButtonsLayout2(RelativeLayout):
+
     def __init__(self, **args):
-        Builder.load_string(BL1)
-        super().__init__(**args)
+        Builder.load_string(BL2)
+        super().__init__(**args)    
     
     def on_size(self, layout, size):
-        if platform in ['android', 'ios']:
-            self.ids.photo.min_state_time = 0.3
+        if platform in ['android', 'ios']: 
+            self.ids.photo.min_state_time = 0.3 
         else:
             self.ids.photo.min_state_time = 1
+        
         if Window.width < Window.height:
             self.ids.other.pos_hint  = {'center_x':.2,'center_y':.5}
             self.ids.other.size_hint = (.2, None)
@@ -126,16 +128,17 @@ class ButtonsLayout1(RelativeLayout):
     def flash(self):
         icon = self.parent.ids.preview.flash()
         if icon == 'on':
-            self.ids.flash.background_normal ='icons/flash.png'
-            self.ids.flash.background_down   ='icons/flash.png'
+            self.ids.flash.background_normal= 'icons/flash.png'
+            self.ids.flash.background_down  = 'icons/flash.png'
         elif icon == 'auto':
-            self.ids.flash.background_normal ='icons/flash-auto.png'
-            self.ids.flash.background_down   ='icons/flash-auto.png'
+            self.ids.flash.background_normal= 'icons/flash-auto.png'
+            self.ids.flash.background_down  = 'icons/flash-auto.png'
         else:
-            self.ids.flash.background_normal ='icons/flash-off.png'
-            self.ids.flash.background_down   ='icons/flash-off.png'
+            self.ids.flash.background_normal= 'icons/flash-off.png'
+            self.ids.flash.background_down  = 'icons/flash-off.png'
 
     def select_camera(self, facing):
         self.parent.ids.preview.select_camera(facing)
 
 
+            

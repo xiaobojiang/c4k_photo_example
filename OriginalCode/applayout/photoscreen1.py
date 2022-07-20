@@ -5,6 +5,7 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
 from camera4kivy import Preview
+from applayout.swipescreen import SwipeScreen
 from applayout.toast import Toast
 
 PS1 = """
@@ -14,14 +15,14 @@ PS1 = """
         id:photo_layout
 """
 
-class PhotoScreen1(BoxLayout):
+class PhotoScreen1(SwipeScreen):
     photo_preview = ObjectProperty(None)
 
     def __init__(self, **args):
         Builder.load_string(PS1)
         super().__init__(**args)
-
-    #def on_enter(self):
+    
+    def on_enter(self):
         self.photo_preview.connect_camera(filepath_callback= self.capture_path)
 
     def on_pre_leave(self):
@@ -101,8 +102,8 @@ class ButtonsLayout1(RelativeLayout):
         super().__init__(**args)
     
     def on_size(self, layout, size):
-        if platform in ['android', 'ios']:
-            self.ids.photo.min_state_time = 0.3
+        if platform in ['android', 'ios']: 
+            self.ids.photo.min_state_time = 0.3 
         else:
             self.ids.photo.min_state_time = 1
         if Window.width < Window.height:

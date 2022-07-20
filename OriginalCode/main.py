@@ -4,8 +4,12 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.utils import platform
 
 from android_permissions import AndroidPermissions
+
+from applayout.homescreen0  import HomeScreen0
 from applayout.photoscreen1 import PhotoScreen1
 from applayout.photoscreen2 import PhotoScreen2
+from applayout.screenshot3 import ScreenShot3
+from applayout.videoscreen4 import VideoScreen4
 
 if platform == 'android':
     from jnius import autoclass
@@ -32,17 +36,35 @@ elif platform != 'ios':
 class MyApp(App):
     
     def build(self):
+        self.enable_swipe = False
+        self.sm = ScreenManager()
+        self.screens = [HomeScreen0(name='0'),
+                        PhotoScreen1(name='1'),
+                        PhotoScreen2(name='2'),
+                        ScreenShot3(name='3'),
+                        VideoScreen4(name='4')]
+        for s in self.screens:
+            self.sm.add_widget(s)
         if platform == 'android':
             Window.bind(on_resize=hide_landscape_status_bar)
-        return PhotoScreen1()
+        return self.sm
 
     def on_start(self):
         self.dont_gc = AndroidPermissions(self.start_app)
 
     def start_app(self):
         self.dont_gc = None
+        self.enable_swipe = True
 
-
+    def swipe_screen(self, right):
+        if self.enable_swipe:
+            i = int(self.sm.current)
+            if right:
+                self.sm.transition.direction = 'right'
+                self.sm.current = str((i-1) % len(self.screens))
+            else:
+                self.sm.transition.direction = 'left'
+                self.sm.current = str((i+1) % len(self.screens))
                     
 
 MyApp().run()

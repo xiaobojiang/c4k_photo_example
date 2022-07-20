@@ -15,7 +15,7 @@ PS2 = """
         id:photo_layout
 """
 
-class PhotoScreen2(SwipeScreen):
+class PhotoScreen2(BoxLayout):
     photo_preview = ObjectProperty(None)
 
     def __init__(self, **args):
