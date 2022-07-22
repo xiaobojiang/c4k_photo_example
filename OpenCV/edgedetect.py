@@ -30,7 +30,8 @@ class EdgeDetect(Preview):
         # ref https://likegeeks.com/python-image-processing/
         gray   = cv2.cvtColor(rgba, cv2.COLOR_RGBA2GRAY)
         blur   = cv2.GaussianBlur(gray, (3,3), 0)
-        edges  = cv2.Canny(blur,50,100)
+        edges  = cv2.Canny(blur,50,150)
+        #edges = cv2.bitwise_not(edges)
         rgba   = cv2.cvtColor(edges, cv2.COLOR_GRAY2RGBA) 
         pixels = rgba.tostring()
 
